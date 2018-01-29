@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Cartoons</title>
+ 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="assets/style.css">
+  <link rel="javascript" type="text/javascript" href="assets/giftastic.js">
+</head>
+
+<body>
+  <!-- large div with header of Funny Cartoons -->
+<div class = "container"> 
+    <h2> Funny Cartoons </h2>
+  <!-- a div to show the buttons that are created -->
+  <div id="viewButton">  </div>
+
+<!-- create a form to allow user to input a cartoon name -->
+  <form id="inputForm">
+      <label for="cartoonInput"> Submit Your Favorite Cartoon: </label>
+      <input type="text" id="cartoonInput"><br>
+      <input id="add-cartoon" type="submit" value="Click here to submit";>
+  </form>
+<!-- create a div to show all cartoon gifs -->
+<div class="grid-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+// initial array of cartoons
+var cartoons = ["power puff girls", "snoopy", "family guy", "bugs bunny"];
+
+
+// make a button for each element in the array
+function makeButton() {
+// empty the viewButton div prior to start
+  $("#viewButton").empty();
+ 
+
+// loop through the array cartoons. for each cartoon, add a button, assign a class, add an attr and put text in 
+  for (var i = 0; i < cartoons.length; i++) {
+    var b = $("<button>");
+    b.addClass("cartoon");
+    b.attr("cartoon-name", cartoons[i]);
+    b.text(cartoons[i]);
+    // append the button that was created to the viewButton div
+    $("#viewButton").append(b);
+  }
+  // when the button with the cartoon name is clicked, "this" refers to the cartoon name.
+    $("button").on("click", function() {
+       $(".grid-container").empty();
+      var cartoon = $(this).attr("cartoon-name");
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + cartoon + "&api_key=NII8Yhz4jCup7wjcOkYMHuAuFBDT2saL&limit=10";
+      // the ajax will call to the URL with a promise to return the data when it is available. 
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).done(function(response) {
+
+      var results = response.data;
+  // This loop will go through the URL response. We requested a limit of 10.  for each item it will create a div. the var rating will pull the rating data from the object. then an image tag will be created. The image tag will get the image result. it will append the rating to this image. Then all 10 images will prepend to the html display. 
+  for (var i = 0; i < results.length; i++) {
+    var display = $("<div>");
+    var rating = results[i].rating;
+    var p = $("<h3><p></h3>").text("Rating: " + rating);
+    var cartoonGif = $("<img>");     
+  
+  // Assign atributes to the cartoonGif to allow images to be stopped and restarted
+   cartoonGif.attr("src", results[i].images.fixed_height.url);
+   cartoonGif.attr("still", results[i].images.fixed_height_still.url);
+   cartoonGif.attr("animate", results[i].images.fixed_height.url)
+   cartoonGif.attr("state", "animate");
+   cartoonGif.addClass("gif");
+   display.append(cartoonGif);
+   display.append(p);
+ 
+
+   $(".grid-container").prepend(display);
+  }
+  });
+ });
+}
+// if a user selects a new cartoon, on the submit click, it will be added to the cartoons array and a new button created
+   $("#add-cartoon").on("click", function(event) {
+       event.preventDefault();
+       var newCartoon = $("#cartoonInput").val();
+       cartoons.push(newCartoon);
+       makeButton();
+   });
+ // Call the make button function 
+ makeButton();
+
+// when the user clicks on the picture it will pause the picture.  when the user clicks again it will restart the picture
+  $(".grid-container").on("click", ".gif", function() {
+      // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+      var state = $(this).attr("state");
+      var stillURL = $(this).attr("still");
+      var animateURL = $(this).attr("animate");
+      // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+      // Then, set the image's data-state to animate
+      // Else set src to the data-still value
+      // and set the state to still
+      if (state === "still") {
+        $(this).attr("src", animateURL);
+        $ (this).attr("state", "animate");
+      } else {
+        $(this).attr("src", stillURL);
+        $(this).attr("state", "still");
+      }
+  });
+
+  </script>
+ 
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+ .grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: #008080;
+  padding: 10px;
+}
+
+#viewButton {
+	color: blue;
+	text-decoration-color: black;
+	width: 100%;
+	margin: 10px;
+	border: 2px solid black;
+}
+
+#inputForm{
+margin: 10px;
+border: 2px solid black;
+color: red;
+text-align: left;
+width: 100%;
+}
+
+#cartoonInput {
+	margin: 10px;
+	border: 2px solid black;
+	color:blue;
+}
+
+.cartoon {
+	border: 1px solid black;
+	padding: 5px;
+	margin: 3px 5px 3px 5px;
+}
+
+#add-cartoon {
+	color: blue;
+	text-decoration-color: black;
+	width: 20%;
+	margin: 10px 10px 10px 191px;
+	border: 2px solid black;
+}
+
